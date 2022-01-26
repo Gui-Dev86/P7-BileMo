@@ -15,8 +15,20 @@ class ProductController extends AbstractController
      */
     public function listProducts(ProductRepository $productRepository, SerializerInterface $serializer): Response
     {
-        $products = $productRepository->findAll();
-        $json = $serializer->serialize($products, 'json', ['groups' => 'post:read']);
+        $products = $productRepository->getAllProducts();
+        $json = $serializer->serialize($products, 'json');
+        $response = new Response($json, 200, [], true);
+        
+        return $response;
+    }
+
+    /**
+     * @Route("api/v1/products/{id}", name="api_show_product", methods={"Get"})
+     */
+    public function showProduct($id, ProductRepository $productRepository, SerializerInterface $serializer): Response
+    {
+        $products = $productRepository->getOneProduct($id);
+        $json = $serializer->serialize($products, 'json');
         $response = new Response($json, 200, [], true);
         
         return $response;
