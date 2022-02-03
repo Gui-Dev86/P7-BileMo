@@ -4,9 +4,11 @@ namespace App\Entity;
 
 use App\Repository\ProductRepository;
 use Doctrine\ORM\Mapping as ORM;
+use OpenApi\Annotations as OA;
 
 /**
  * @ORM\Entity(repositoryClass=ProductRepository::class)
+ * @OA\Schema()
  */
 class Product
 {
@@ -14,27 +16,32 @@ class Product
      * @ORM\Id
      * @ORM\GeneratedValue
      * @ORM\Column(type="integer")
+     * @OA\Property(type="integer")
      */
     private $id;
 
     /**
      * @ORM\Column(type="string", length=255)
+     * @OA\Property(type="string")
      */
     private $name;
 
     /**
      * @ORM\Column(type="float")
+     * @OA\Property(type="float")
      */
     private $price;
 
     /**
      * @ORM\Column(type="string", length=5000)
+     * @OA\Property(type="string")
      */
     private $description;
 
     /**
      * @ORM\ManyToOne(targetEntity=Brand::class, inversedBy="products")
      * @ORM\JoinColumn(nullable=false)
+     * @OA\Property(type="string")
      */
     private $brand;
 

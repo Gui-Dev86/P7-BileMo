@@ -7,28 +7,74 @@ use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Component\Serializer\SerializerInterface;
+use FOS\RestBundle\Controller\Annotations as Rest;
+use OpenApi\Annotations as OA;
 
 class ProductController extends AbstractController
 {
     /**
-     * @Route("api/v1/products", name="api_list_products", methods={"Get"})
+     * Return a list of phones ressource
+     * 
+     * @Rest\GET(path="/api/mobiles", name="api_list_mobiles")
+     * @Rest\View(statusCode= 200)
+     * @OA\Get(
+     *     path="/mobiles",
+     *     security={"bearer"},
+     *     @OA\Response(
+     *          response="200",
+     *          description="List of the mobile phones",
+     *          @OA\JsonContent(type="array",@OA\Items(ref="#/components/schemas/Product")),
+     *     ),
+     *     @OA\Response(response=401, description="JWT Token not found or expired"),
+     *     @OA\Response(response=404, description="Page not found") 
+     * )
+     * @param ProductRepository $productRepository
+     * @param SerializerInterface $serializer
+     * @return response
      */
-    public function listProducts(ProductRepository $productRepository, SerializerInterface $serializer): Response
+    public function listMobiles(ProductRepository $productRepository, SerializerInterface $serializer): Response
     {
         $products = $productRepository->getAllProducts();
         $json = $serializer->serialize($products, 'json');
+
         $response = new Response($json, 200, [], true);
         
         return $response;
     }
 
     /**
-     * @Route("api/v1/products/{id}", name="api_show_product", methods={"Get"})
+     * Return phone details
+     * 
+     * @Rest\Get(path="/api/mobiles/{id}", name="api_details_mobile")
+     * @Rest\View(statusCode= 200)
+     * @OA\Get(
+     *     path="/mobiles/{id}",
+     *     security={"bearer"},
+     *     @OA\Parameter(
+     *          name="id",
+     *          in="path",
+     *          description="Id of the mobile phone to get",
+     *          required=true,
+     *          @OA\Schema(type="integer")
+     *     ),
+     *     @OA\Response(
+     *          response="200",
+     *          description="Details for one mobile",
+     *          @OA\JsonContent(ref="#/components/schemas/Product"),
+     *     ),
+     *     @OA\Response(response=401, description="JWT Token not found or expired"),
+     *     @OA\Response(response=404, description="Page not found")
+     * )
+     * @param $id
+     * @param ProductRepository $productRepository
+     * @param SerializerInterface $serializer
+     * @return response
      */
-    public function showProduct($id, ProductRepository $productRepository, SerializerInterface $serializer): Response
+    public function showMobile($id, ProductRepository $productRepository, SerializerInterface $serializer): Response
     {
         $products = $productRepository->getOneProduct($id);
         $json = $serializer->serialize($products, 'json');
+
         $response = new Response($json, 200, [], true);
         
         return $response;
