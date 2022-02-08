@@ -6,27 +6,15 @@ use App\Repository\ProductRepository;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
-<<<<<<< HEAD
-use Symfony\Component\Serializer\SerializerInterface;
-=======
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Serializer\SerializerInterface;
 use FOS\RestBundle\Controller\Annotations as Rest;
 use OpenApi\Annotations as OA;
 use Knp\Component\Pager\PaginatorInterface;
->>>>>>> Product
 
 class ProductController extends AbstractController
 {
     /**
-<<<<<<< HEAD
-     * @Route("api/v1/products", name="api_list_products", methods={"Get"})
-     */
-    public function listProducts(ProductRepository $productRepository, SerializerInterface $serializer): Response
-    {
-        $products = $productRepository->findAll();
-        $json = $serializer->serialize($products, 'json', ['groups' => 'post:read']);
-=======
      * Return a list of phones ressource
      * 
      * @Rest\Get(path="/api/mobiles", name="api_list_mobiles")
@@ -93,7 +81,6 @@ class ProductController extends AbstractController
         $product = $productRepository->getOneProduct($id);
         $json = $serializer->serialize($product, 'json');
 
->>>>>>> Product
         $response = new Response($json, 200, [], true);
         
         return $response;
