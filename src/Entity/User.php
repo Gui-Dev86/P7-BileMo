@@ -63,7 +63,7 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
      * @Assert\Regex(
      *     pattern = "^(?=.*[a-z])(?=.*[A-Z])(?=.*[0-9])^",
      *     match = true,
-     *     message = "Le mot de passe doit contenir au moins une minuscule, une majuscule et un chiffre."
+     *     message = "Votre mot de passe doit contenir au moins une minuscule, une majuscule et un chiffre."
      * )
      * @OA\Property(type="string")
      */

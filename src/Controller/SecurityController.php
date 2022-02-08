@@ -23,8 +23,18 @@ class SecurityController extends AbstractController
      *          response="200",
      *          description="Authenticate token JWT",
      *     ),
-     *     @OA\Response(response=401, description="Invalid credentials"),
-     *     @OA\Response(response=404, description="Page not found")
+     * @OA\RequestBody(
+     *     required=true,
+     *     @OA\MediaType(
+     *       mediaType="application/json",
+     *       @OA\Schema(
+     *         @OA\Property(property="username", description="The username of the client.", type="string", example="yourUsername"),
+     *         @OA\Property(property="password", password="Password of the client.", type="string", format="password", example="yourPassword")
+     *       )
+     *     )
+     *   ),
+     * @OA\Response(response=401, description="Invalid credentials"),
+     * @OA\Response(response=404, description="Page not found")
      * )
      * @return JsonResponse
      */
