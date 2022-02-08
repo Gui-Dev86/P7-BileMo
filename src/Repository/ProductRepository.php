@@ -5,6 +5,8 @@ namespace App\Repository;
 use App\Entity\Product;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Doctrine\Persistence\ManagerRegistry;
+use Doctrine\ORM\Query\Expr\Join;
+
 
 /**
  * @method Product|null find($id, $lockMode = null, $lockVersion = null)
@@ -47,4 +49,38 @@ class ProductRepository extends ServiceEntityRepository
         ;
     }
     */
+
+    /**
+     * Returns all Products with brand
+     * @return void 
+     */
+    public function getAllProducts(){
+        $query = $this->createQueryBuilder('a')
+        ->select('a.id',
+            'a.name',
+            'a.price',
+            'a.description',
+            'b.name')
+        ->innerJoin('App\Entity\Brand', 'b', Join::WITH, 'a.brand = b.id')
+        ;
+        return $query->getQuery()->getResult();
+    }
+
+    /**
+     * Returns one Product with brand
+     * @return void 
+     */
+    public function getOneProduct($id){
+        $query = $this->createQueryBuilder('a')
+        ->select('a.id',
+            'a.name',
+            'a.price',
+            'a.description',
+            'b.name')
+        ->innerJoin('App\Entity\Brand', 'b', Join::WITH, 'a.brand = b.id')
+        ->where('a.id = :id')
+        ->setParameter(':id', $id)
+        ;
+        return $query->getQuery()->getResult();
+    }
 }

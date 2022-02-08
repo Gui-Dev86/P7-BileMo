@@ -8,6 +8,8 @@ use Symfony\Component\Security\Core\User\PasswordAuthenticatedUserInterface;
 use Symfony\Component\Security\Core\User\UserInterface;
 use Symfony\Component\Validator\Constraints as Assert;
 use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
+use OpenApi\Annotations as OA;
+use Symfony\Component\Serializer\Annotation\Groups;
 
 /**
  * @ORM\Entity(repositoryClass=UserRepository::class)
@@ -19,6 +21,7 @@ use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
  *      fields={"email"},
  *      message="Cette adresse email est déjà utilisée."
  * )
+ * @OA\Schema()
  */
 class User implements UserInterface, PasswordAuthenticatedUserInterface
 {
@@ -26,16 +29,22 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
      * @ORM\Id
      * @ORM\GeneratedValue
      * @ORM\Column(type="integer")
+     * @OA\Property(type="integer")
+     * @Groups("post:readUser")
      */
     private $id;
 
     /**
      * @ORM\Column(type="string", length=180, unique=true)
+     * @OA\Property(type="string")
+     * @Groups("post:readUser")
      */
     private $username;
 
     /**
      * @ORM\Column(type="json")
+     * @OA\Property(type="json")
+     * @Groups("post:readUser")
      */
     private $roles = [];
 
@@ -56,6 +65,7 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
      *     match = true,
      *     message = "Le mot de passe doit contenir au moins une minuscule, une majuscule et un chiffre."
      * )
+     * @OA\Property(type="string")
      */
     private $password;
 
@@ -68,21 +78,29 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
      *      max = 255,
      *      maxMessage = "Votre adresse email ne peut pas contenir plus de {{ limit }} caractères."
      * )
+     * @OA\Property(type="string")
+     * @Groups("post:readUser")
      */
     private $email;
 
     /**
      * @ORM\Column(type="string", length=255)
+     * @OA\Property(type="string")
+     * @Groups("post:readUser")
      */
     private $lastname;
 
     /**
      * @ORM\Column(type="string", length=255)
+     * @OA\Property(type="string")
+     * @Groups("post:readUser")
      */
     private $firstname;
 
     /**
      * @ORM\Column(type="datetime")
+     * @OA\Property(type="datetime")
+     * @Groups("post:readUser")
      */
     private $dateCreate;
 
