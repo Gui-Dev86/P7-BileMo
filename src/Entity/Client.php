@@ -10,6 +10,7 @@ use Symfony\Component\Security\Core\User\PasswordAuthenticatedUserInterface;
 use Symfony\Component\Security\Core\User\UserInterface;
 use Symfony\Component\Validator\Constraints as Assert;
 use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
+use OpenApi\Annotations as OA;
 
 /**
  * @ORM\Entity(repositoryClass=ClientRepository::class)
@@ -21,6 +22,7 @@ use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
  *      fields={"email"},
  *      message="Cette adresse email est déjà utilisée."
  * )
+ * @OA\Schema()
  */
 class Client implements UserInterface, PasswordAuthenticatedUserInterface
 {
@@ -33,6 +35,7 @@ class Client implements UserInterface, PasswordAuthenticatedUserInterface
 
     /**
      * @ORM\Column(type="string", length=180, unique=true)
+     * @OA\Property(type="string")
      */
     private $username;
 
@@ -58,6 +61,7 @@ class Client implements UserInterface, PasswordAuthenticatedUserInterface
      *     match = true,
      *     message = "Le mot de passe doit contenir au moins une minuscule, une majuscule et un chiffre."
      * )
+     * @OA\Property(type="string")
      */
     private $password;
 

@@ -22,6 +22,7 @@ class SecurityController extends AbstractController
      *     @OA\Response(
      *          response="200",
      *          description="Authenticate token JWT",
+     *     @OA\JsonContent(ref="#/components/schemas/Client"),
      *     ),
      * @OA\RequestBody(
      *     required=true,
@@ -29,7 +30,7 @@ class SecurityController extends AbstractController
      *       mediaType="application/json",
      *       @OA\Schema(
      *         @OA\Property(property="username", description="The username of the client.", type="string", example="yourUsername"),
-     *         @OA\Property(property="password", password="Password of the client.", type="string", format="password", example="yourPassword")
+     *         @OA\Property(property="password", description="Password of the client.", type="string", format="password", example="yourPassword")
      *       )
      *     )
      *   ),

@@ -1,6 +1,62 @@
 {
     "openapi": "3.0.0",
+    "info": {
+        "title": "bilemo-api",
+        "version": "1.0"
+    },
+    "servers": [
+        {
+            "url": "http://localhost:8000/api/",
+            "description": "Api BileMo"
+        }
+    ],
     "paths": {
+        "/login_check": {
+            "post": {
+                "operationId": "9056e654130817d5830fe3912b502e81",
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "properties": {
+                                    "username": {
+                                        "description": "The username of the client.",
+                                        "type": "string",
+                                        "example": "yourUsername"
+                                    },
+                                    "password": {
+                                        "description": "Password of the client.",
+                                        "type": "string",
+                                        "example": "yourPassword"
+                                        
+                                    }
+                                },
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "Authenticate token JWT",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/Client"
+                                }
+                            }
+                        }
+                    },
+                    "401": {
+                        "description": "Invalid credentials"
+                    },
+                    "404": {
+                        "description": "Page not found"
+                    }
+                }
+            }
+        },
         "/mobiles": {
             "get": {
                 "summary": "Return a list of phones ressource",
@@ -28,9 +84,9 @@
                 },
                 "security": [
                     {
-                        "scalar": "bearer"
+                       "bearerAuth": []
                     }
-                ]
+                 ]
             }
         },
         "/mobiles/{id}": {
@@ -68,48 +124,9 @@
                 },
                 "security": [
                     {
-                        "scalar": "bearer"
+                        "bearerAuth": []
                     }
                 ]
-            }
-        },
-        "/login_check": {
-            "post": {
-                "operationId": "9056e654130817d5830fe3912b502e81",
-                "requestBody": {
-                    "required": true,
-                    "content": {
-                        "application/json": {
-                            "schema": {
-                                "properties": {
-                                    "username": {
-                                        "description": "The username of the client.",
-                                        "type": "string",
-                                        "example": "yourUsername"
-                                    },
-                                    "password": {
-                                        "type": "string",
-                                        "format": "password",
-                                        "example": "yourPassword",
-                                        "password": "Password of the client."
-                                    }
-                                },
-                                "type": "object"
-                            }
-                        }
-                    }
-                },
-                "responses": {
-                    "200": {
-                        "description": "Authenticate token JWT"
-                    },
-                    "401": {
-                        "description": "Invalid credentials"
-                    },
-                    "404": {
-                        "description": "Page not found"
-                    }
-                }
             }
         },
         "/users": {
@@ -139,7 +156,7 @@
                 },
                 "security": [
                     {
-                        "scalar": "bearer"
+                        "bearerAuth": []
                     }
                 ]
             }
@@ -179,13 +196,23 @@
                 },
                 "security": [
                     {
-                        "scalar": "bearer"
+                        "bearerAuth": []
                     }
                 ]
             }
         }
-    },
+    }, 
     "components": {
+        "securitySchemes": {
+            "bearerAuth": {
+              "type": "http",
+              "scheme": "bearer",
+              "bearerFormat": "JWT " 
+            }
+        },
+        "security": {
+           "bearerAuth": []  
+        },
         "schemas": {
             "Product": {
                 "properties": {
@@ -235,6 +262,18 @@
                     "dateCreate": {
                         "type": "string",
                         "format": "date-time"
+                    }
+                },
+                "type": "object"
+            },
+            "Client": {
+                "properties": {
+                    "username": {
+                        "type": "string"
+                    },
+                    "password": {
+                        "description": "The hashed password",
+                        "type": "string"
                     }
                 },
                 "type": "object"
