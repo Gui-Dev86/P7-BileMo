@@ -22,6 +22,13 @@ class ProductController extends AbstractController
      * @OA\Get(
      *     path="/mobiles",
      *     security={"bearer"},
+     *     @OA\Parameter(
+     *          name="page",
+     *          in="query",
+     *          description="Page number",
+     *          required=false,
+     *          @OA\Schema(type="integer")
+     *     ),
      *     @OA\Response(
      *          response="200",
      *          description="List of the mobile phones",
@@ -32,6 +39,8 @@ class ProductController extends AbstractController
      * )
      * @param ProductRepository $productRepository
      * @param SerializerInterface $serializer
+     * @param Request $request
+     * @param PaginatorInterface $paginator
      * @return response
      */
     public function listMobiles(ProductRepository $productRepository, SerializerInterface $serializer, Request $request, PaginatorInterface $paginator): Response

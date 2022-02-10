@@ -13,6 +13,10 @@
     "paths": {
         "/login_check": {
             "post": {
+                "tags": [ 
+                    "Authenticate" 
+                ],
+                "summary": "Return a JWT token for authentification",
                 "operationId": "9056e654130817d5830fe3912b502e81",
                 "requestBody": {
                     "required": true,
@@ -59,8 +63,22 @@
         },
         "/mobiles": {
             "get": {
+                "tags": [ 
+                    "Mobiles" 
+                ],
                 "summary": "Return a list of phones ressource",
                 "operationId": "32acfc985d6def6ddc382e6d6df6ee19",
+                "parameters": [
+                    {
+                        "name": "page",
+                        "in": "query",
+                        "description": "Page number",
+                        "required": false,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
                 "responses": {
                     "200": {
                         "description": "List of the mobile phones",
@@ -84,13 +102,16 @@
                 },
                 "security": [
                     {
-                       "bearerAuth": []
+                        "bearer": []
                     }
                  ]
             }
         },
         "/mobiles/{id}": {
             "get": {
+                "tags": [ 
+                    "Mobiles" 
+                ],
                 "summary": "Return phone details",
                 "operationId": "358dda1353c9977c9bb71fa5de88224a",
                 "parameters": [
@@ -124,15 +145,29 @@
                 },
                 "security": [
                     {
-                        "bearerAuth": []
+                        "bearer": []
                     }
                 ]
             }
         },
         "/users": {
             "get": {
+                "tags": [ 
+                    "Users" 
+                ],
                 "summary": "Return a list of users for the client",
                 "operationId": "188bef79089c193d56b951242835f198",
+                "parameters": [
+                    {
+                        "name": "page",
+                        "in": "query",
+                        "description": "Page number",
+                        "required": false,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
                 "responses": {
                     "200": {
                         "description": "List of the mobile phones",
@@ -156,13 +191,85 @@
                 },
                 "security": [
                     {
-                        "bearerAuth": []
+                        "bearer": []
+                    }
+                ]
+            },
+            "post": {
+                "tags": [ 
+                    "Users" 
+                ],
+                "summary": "Create a new user",
+                "operationId": "36c4aa0173e0bb6d43e416d166ed7b46",
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "properties": {
+                                    "username": {
+                                        "description": "The username of the user.",
+                                        "type": "string",
+                                        "example": "usernameUser"
+                                    },
+                                    "password": {
+                                        "description": "Password of the user.",
+                                        "type": "string",
+                                        "format": "password",
+                                        "example": "passwordUser123"
+                                    },
+                                    "firstname": {
+                                        "description": "Firstname of the new user.",
+                                        "type": "string",
+                                        "example": "John"
+                                    },
+                                    "lastname": {
+                                        "description": "Lastname of the new user.",
+                                        "type": "string",
+                                        "example": "Doe"
+                                    },
+                                    "email": {
+                                        "description": "Email address of the new user.",
+                                        "type": "string",
+                                        "format": "email",
+                                        "example": "john_doe@gmail.fr"
+                                    }
+                                },
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "201": {
+                        "description": "Creation of an user",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/User"
+                                }
+                            }
+                        }
+                    },
+                    "401": {
+                        "description": "JWT Token not found or expired"
+                    },
+                    "404": {
+                        "description": "Page not found"
+                    }
+                },
+                "security": [
+                    {
+                        "bearer": []
                     }
                 ]
             }
         },
         "/users/{id}": {
             "get": {
+                "tags": [ 
+                    "Users" 
+                ],
                 "summary": "Return user client details",
                 "operationId": "91d8b7bd829c950d78ae23fd879ba4e2",
                 "parameters": [
@@ -196,7 +303,7 @@
                 },
                 "security": [
                     {
-                        "bearerAuth": []
+                        "bearer": []
                     }
                 ]
             }
@@ -204,14 +311,12 @@
     }, 
     "components": {
         "securitySchemes": {
-            "bearerAuth": {
-              "type": "http",
-              "scheme": "bearer",
-              "bearerFormat": "JWT " 
+            "bearer": {
+                "type": "http",
+                "scheme": "bearer",
+                "in": "header",
+                "bearerFormat": "JWT"
             }
-        },
-        "security": {
-           "bearerAuth": []  
         },
         "schemas": {
             "Product": {

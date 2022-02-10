@@ -9,10 +9,14 @@ use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Component\HttpFoundation\Request;
+use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\Serializer\SerializerInterface;
+use Symfony\Component\HttpKernel\Exception\HttpException;
+use Symfony\Component\Validator\Validator\ValidatorInterface;
+use Symfony\Component\Security\Core\Encoder\UserPasswordEncoderInterface;
+use Doctrine\ORM\EntityManagerInterface;
 use FOS\RestBundle\Controller\Annotations as Rest;
 use OpenApi\Annotations as OA;
-use Symfony\Component\HttpKernel\Exception\HttpException;
 use Knp\Component\Pager\PaginatorInterface;
 
 class UserController extends AbstractController
@@ -26,6 +30,13 @@ class UserController extends AbstractController
      * @OA\Get(
      *     path="/users",
      *     security={"bearer"},
+     *     @OA\Parameter(
+     *          name="page",
+     *          in="query",
+     *          description="Page number",
+     *          required=false,
+     *          @OA\Schema(type="integer")
+     *     ),
      *     @OA\Response(
      *          response="200",
      *          description="List of the mobile phones",
@@ -36,6 +47,8 @@ class UserController extends AbstractController
      * )
      * @param UserRepository $userRepository
      * @param SerializerInterface $serializer
+     * @param Request $request
+     * @param PaginatorInterface $paginator
      * @return response
      */
     public function listUsers(UserRepository $userRepository, SerializerInterface $serializer, Request $request, PaginatorInterface $paginator): Response
@@ -48,7 +61,7 @@ class UserController extends AbstractController
         //recover a page with 5 users
         $users = $paginator->paginate($datas, $request->query->getInt('page', 1), 5);
 
-        $json = $serializer->serialize($users, 'json', ['groups' => 'post:readUser']);
+        $json = $serializer->serialize($users, 'json', ['groups' => 'user']);
 
         $response = new Response($json, 200, [], true);
         
@@ -72,9 +85,9 @@ class UserController extends AbstractController
      *          @OA\Schema(type="integer")
      *     ),
      *     @OA\Response(
-     *          response="200",
-     *          description="Details for one user",
-     *          @OA\JsonContent(ref="#/components/schemas/User"),
+     *       response="200",
+     *         description="Details for one user",
+     *         @OA\JsonContent(ref="#/components/schemas/User"),
      *     ),
      *     @OA\Response(response=401, description="JWT Token not found or expired"),
      *     @OA\Response(response=404, description="Page not found")
@@ -100,9 +113,72 @@ class UserController extends AbstractController
         }
         else 
         {
-            $json = $serializer->serialize($user, 'json', ['groups' => 'post:readUser']);
+            $json = $serializer->serialize($user, 'json', ['groups' => 'user']);
             $response = new Response($json, 200, [], true);
             return $response;
         }
+    }
+
+    /**
+     * Create a new user
+     * 
+     * @Rest\Post(path="/api/users", name="api_add_users")
+     * @Rest\View(statusCode= 201)
+     * @OA\Post(
+     *     path="/users",
+     *     security={"bearer"},
+     *     @OA\Response(
+     *          response="201",
+     *          description="Creation of an user",
+     *          @OA\JsonContent(ref="#/components/schemas/User"),
+     *     ),
+     * @OA\RequestBody(
+     *    required=true,
+     *      @OA\MediaType(
+     *        mediaType="application/json",
+     *         @OA\Schema(
+     *          @OA\Property(property="username", description="The username of the user.", type="string", example="usernameUser"),
+     *          @OA\Property(property="password", description="Password of the user.", type="string", format="password", example="passwordUser123"),
+     *          @OA\Property(property="firstname", description="Firstname of the new user.", type="string", example="John"),
+     *          @OA\Property(property="lastname", description="Lastname of the new user.", type="string", example="Doe"),
+     *          @OA\Property(property="email", description="Email address of the new user.", type="string", format="email", example="john_doe@gmail.fr")
+     *        )
+     *      )
+     *    ),
+     * @OA\Response(response=401, description="JWT Token not found or expired"),
+     * @OA\Response(response=404, description="Page not found")
+     * )
+     * @param UserRepository $userRepository
+     * @param SerializerInterface $serializer
+     * @param Request $request
+     * @param EntityManagerInterface $manager
+     * @param ValidatorInterface $validator
+     * @param UserPasswordEncoderInterface $encoder
+     * @return response
+     */
+    public function addUser(UserRepository $userRepository, SerializerInterface $serializer, Request $request, EntityManagerInterface $manager, ValidatorInterface $validator, UserPasswordEncoderInterface $encoder): Response
+    {
+        $json = $request->getContent();
+
+        $user = $serializer->deserialize($json, User::class, 'json', ['groups' => 'user']);
+        $errors = $validator->validate($user);
+
+        if(count($errors) > 0) {
+            $data = $serializer->serialize($errors, 'json');
+            $response =  new JsonResponse($data, 400, [], true);
+            return $response;
+        }
+
+        $password = $encoder->encodePassword($user, $user->getPassword());
+        $dateCreate = new \DateTime();
+
+        $user->setPassword($password)
+            ->setRoles(["ROLE_USER"])
+            ->setDateCreate($dateCreate)
+            ->setClient($this->getUser());
+        $manager->persist($user);
+        $manager->flush();
+        
+        return new Response("User create", 201);
     }
 }

@@ -15,6 +15,8 @@ class SecurityController extends AbstractController
 
 
     /**
+     * Return a JWT token for authentification
+     * 
      * @Rest\Post(path="/api/login_check", name="api_login")
      * @Rest\View(statusCode= 200)
      * @OA\Post(

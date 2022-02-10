@@ -30,21 +30,20 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
      * @ORM\GeneratedValue
      * @ORM\Column(type="integer")
      * @OA\Property(type="integer")
-     * @Groups("post:readUser")
+     * @Groups("user")
      */
     private $id;
 
     /**
      * @ORM\Column(type="string", length=180, unique=true)
      * @OA\Property(type="string")
-     * @Groups("post:readUser")
+     * @Groups("user")
      */
     private $username;
 
     /**
      * @ORM\Column(type="json")
      * @OA\Property(type="json")
-     * @Groups("post:readUser")
      */
     private $roles = [];
 
@@ -66,6 +65,7 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
      *     message = "Votre mot de passe doit contenir au moins une minuscule, une majuscule et un chiffre."
      * )
      * @OA\Property(type="string")
+     * @Groups("user")
      */
     private $password;
 
@@ -79,28 +79,28 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
      *      maxMessage = "Votre adresse email ne peut pas contenir plus de {{ limit }} caractères."
      * )
      * @OA\Property(type="string")
-     * @Groups("post:readUser")
+     * @Groups("user")
      */
     private $email;
 
     /**
      * @ORM\Column(type="string", length=255)
      * @OA\Property(type="string")
-     * @Groups("post:readUser")
+     * @Groups("user")
      */
     private $lastname;
 
     /**
      * @ORM\Column(type="string", length=255)
      * @OA\Property(type="string")
-     * @Groups("post:readUser")
+     * @Groups("user")
      */
     private $firstname;
 
     /**
      * @ORM\Column(type="datetime")
      * @OA\Property(type="datetime")
-     * @Groups("post:readUser")
+     * @Groups("user")
      */
     private $dateCreate;
 
