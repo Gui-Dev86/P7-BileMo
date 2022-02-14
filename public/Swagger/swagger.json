@@ -306,6 +306,40 @@
                         "bearer": []
                     }
                 ]
+            },
+            "delete": {
+                "tags": [ 
+                    "Users" 
+                ],
+                "summary": "Delete an user",
+                "operationId": "789fde5561b731b2609814949ac1c23a",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "description": "Id of the user",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "responses": {
+                    "204": {
+                        "description": "The user has been deleted"
+                    },
+                    "401": {
+                        "description": "JWT Token not found or expired"
+                    },
+                    "404": {
+                        "description": "Page not found"
+                    }
+                },
+                "security": [
+                    {
+                        "bearer": []
+                    }
+                ]
             }
         }
     }, 

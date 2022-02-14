@@ -122,7 +122,7 @@ class UserController extends AbstractController
     /**
      * Create a new user
      * 
-     * @Rest\Post(path="/api/users", name="api_add_users")
+     * @Rest\Post(path="/api/users", name="api_add_user")
      * @Rest\View(statusCode= 201)
      * @OA\Post(
      *     path="/users",
@@ -179,6 +179,59 @@ class UserController extends AbstractController
         $manager->persist($user);
         $manager->flush();
         
-        return new Response("User create", 201);
+        return new Response("The user has been created", 201);
+    }
+
+    /**
+     * Delete an user
+     * 
+     * @Rest\Delete(path="/api/users/{id}", name="api_delete_user")
+     * @Rest\View(statusCode= 204)
+     * @OA\Delete(
+     *     path="/users/{id}",
+     *     security={"bearer"},
+     *     @OA\Parameter(
+     *          name="id",
+     *          in="path",
+     *          description="Id of the user",
+     *          required=true,
+     *          @OA\Schema(type="integer")
+     *     ),
+     *     @OA\Response(
+     *          response="204",
+     *          description="The user has been deleted",
+     *     ),
+     *     @OA\Response(response=401, description="JWT Token not found or expired"),
+     *     @OA\Response(response=404, description="Page not found")
+     * )
+     * @param $id
+     * @param UserRepository $userRepository
+     * @param Request $request
+     * @param EntityManagerInterface $manager
+     * @return response
+     */
+    public function deleteUser($id, UserRepository $userRepository, Request $request): Response
+    {
+        //recover the id of the client connected
+        $client = $this->getUser();
+        $idClient = $client->getId();
+        //recover the datas user
+        $user = $userRepository->find($id);
+        //recover the client id of the user
+        $userClient = $user->getClient();
+        $idUserClient = $userClient->getId();
+        //verify if the client has access to this user
+        if($idClient !== $idUserClient) {
+            throw New HttpException(403, "You haven't access to this ressource.");
+        }
+        else 
+        {
+            $manager = $this->getDoctrine()->getManager();
+            $manager->remove($user);
+            $manager->flush();
+
+            return new Response("The user has been deleted", 204);
+            
+        }
     }
 }
