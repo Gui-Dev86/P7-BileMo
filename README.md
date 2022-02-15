@@ -18,7 +18,9 @@ git clone https://github.com/Gui-Dev86/P7-BileMo.git
 ```
 composer install
 ```
+```
 npm install
+```
 
 - Réalisez une copie du fichier .env nommée .env.local qui devra être crée à la racine du projet. Vous y configurez vos variables d'environnement tel que la connexion à la base de données et votre JWT_PASSPHRASE.
 
