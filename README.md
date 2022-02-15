@@ -19,7 +19,7 @@ git clone https://github.com/Gui-Dev86/P7-BileMo.git
 composer install
 ```
 npm install
-```
+
 - Réalisez une copie du fichier .env nommée .env.local qui devra être crée à la racine du projet. Vous y configurez vos variables d'environnement tel que la connexion à la base de données et votre JWT_PASSPHRASE.
 
 Pour paramétrer votre base de données, modifiez cette ligne avec le nom d'utilisateur, mot de passe et nom de la base de données correespondant (ne pas oublier de retirer le # devant la ligne afin qu'elle soit prise en compte).
@@ -28,7 +28,8 @@ Pour paramétrer votre base de données, modifiez cette ligne avec le nom d'util
 
 exemple : DATABASE_URL="mysql://utilisateur(root de base):mot de passe(vide de base)@127.0.0.1:3306/(nom de la base de données)
 
-Pour paramétrer votre connexion par token JWT [Documentation Lexik](https://github.com/lexik/LexikJWTAuthenticationBundle/blob/2.x/Resources/doc/index.md#installation.com), attention à bien posséder l'extension openssl
+Pour paramétrer votre connexion par token JWT [Official documentation](https://github.com/lexik/LexikJWTAuthenticationBundle/blob/master/Resources/doc/index.md#installation
+), attention à bien posséder l'extension openssl
 
     $ mkdir -p config/jwt
     $ openssl genpkey -out config/jwt/private.pem -aes256 -algorithm rsa -pkeyopt rsa_keygen_bits:4096
