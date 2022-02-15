@@ -80,7 +80,9 @@ Le projet est maintenant correctement installé. Pour le lancer déplacez vous d
 $ symfony server:start
 ```
 
-Pour accéder à la documentation de l'API 
+Pour accéder à la documentation de l'API:
+```
 http://localhost:8000/swagger/#/
+```
 
 Auteur Guillaume Vignères - Formation Développeur d'application PHP/Symfony - Openclassroom
