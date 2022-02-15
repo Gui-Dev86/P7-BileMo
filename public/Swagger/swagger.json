@@ -1,8 +1,9 @@
 {
     "openapi": "3.0.0",
     "info": {
-        "title": "bilemo-api",
-        "version": "1.0"
+        "title": "Swagger Bilemo",
+        "description": "This is the Bilemo server.",
+        "version": "1.0.0"
     },
     "servers": [
         {
@@ -11,60 +12,10 @@
         }
     ],
     "paths": {
-        "/login_check": {
-            "post": {
-                "tags": [ 
-                    "Authenticate" 
-                ],
-                "summary": "Return a JWT token for authentification",
-                "operationId": "9056e654130817d5830fe3912b502e81",
-                "requestBody": {
-                    "required": true,
-                    "content": {
-                        "application/json": {
-                            "schema": {
-                                "properties": {
-                                    "username": {
-                                        "description": "The username of the client.",
-                                        "type": "string",
-                                        "example": "yourUsername"
-                                    },
-                                    "password": {
-                                        "description": "Password of the client.",
-                                        "type": "string",
-                                        "example": "yourPassword"
-                                        
-                                    }
-                                },
-                                "type": "object"
-                            }
-                        }
-                    }
-                },
-                "responses": {
-                    "200": {
-                        "description": "Authenticate token JWT",
-                        "content": {
-                            "application/json": {
-                                "schema": {
-                                    "$ref": "#/components/schemas/Client"
-                                }
-                            }
-                        }
-                    },
-                    "401": {
-                        "description": "Invalid credentials"
-                    },
-                    "404": {
-                        "description": "Page not found"
-                    }
-                }
-            }
-        },
         "/mobiles": {
             "get": {
-                "tags": [ 
-                    "Mobiles" 
+                "tags": [
+                    "Mobiles"
                 ],
                 "summary": "Return a list of phones ressource",
                 "operationId": "32acfc985d6def6ddc382e6d6df6ee19",
@@ -104,13 +55,13 @@
                     {
                         "bearer": []
                     }
-                 ]
+                ]
             }
         },
         "/mobiles/{id}": {
             "get": {
-                "tags": [ 
-                    "Mobiles" 
+                "tags": [
+                    "Mobiles"
                 ],
                 "summary": "Return phone details",
                 "operationId": "358dda1353c9977c9bb71fa5de88224a",
@@ -150,10 +101,60 @@
                 ]
             }
         },
+        "/login_check": {
+            "post": {
+                "tags": [
+                    "Authenticate"
+                ],
+                "summary": "Return a JWT token for authentification",
+                "operationId": "9056e654130817d5830fe3912b502e81",
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "properties": {
+                                    "username": {
+                                        "description": "The username of the client.",
+                                        "type": "string",
+                                        "example": "yourUsername"
+                                    },
+                                    "password": {
+                                        "description": "Password of the client.",
+                                        "type": "string",
+                                        "format": "password",
+                                        "example": "yourPassword"
+                                    }
+                                },
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "Authenticate token JWT",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/Client"
+                                }
+                            }
+                        }
+                    },
+                    "401": {
+                        "description": "Invalid credentials"
+                    },
+                    "404": {
+                        "description": "Page not found"
+                    }
+                }
+            }
+        },
         "/users": {
             "get": {
-                "tags": [ 
-                    "Users" 
+                "tags": [
+                    "Users"
                 ],
                 "summary": "Return a list of users for the client",
                 "operationId": "188bef79089c193d56b951242835f198",
@@ -196,8 +197,8 @@
                 ]
             },
             "post": {
-                "tags": [ 
-                    "Users" 
+                "tags": [
+                    "Users"
                 ],
                 "summary": "Create a new user",
                 "operationId": "36c4aa0173e0bb6d43e416d166ed7b46",
@@ -246,7 +247,30 @@
                         "content": {
                             "application/json": {
                                 "schema": {
-                                    "$ref": "#/components/schemas/User"
+                                    "type": "object",
+                                    "properties": {
+                                        "id": {
+                                        "type": "integer",
+                                        "format": "int64",
+                                        "description": "ID of the user created"
+                                        }
+                                    }
+                                }
+                            }
+                        },
+                        "links" : {
+                            "GetUserByUserId": {
+                                "description": "The ID value returned can be used as the ID parameter in GET users/{id}",
+                                "operationId": "getUser",
+                                "parameters": {
+                                    "id": "$response.body#/id"
+                                }
+                            },
+                            "DeleteUserByUserId": {
+                                "description": "The ID value returned can be used as the ID parameter in DELETE users/{id}",
+                                "operationId": "deleteUser",
+                                "parameters": {
+                                    "id": "$response.body#/id"
                                 }
                             }
                         }
@@ -267,11 +291,11 @@
         },
         "/users/{id}": {
             "get": {
-                "tags": [ 
-                    "Users" 
+                "tags": [
+                    "Users"
                 ],
                 "summary": "Return user client details",
-                "operationId": "91d8b7bd829c950d78ae23fd879ba4e2",
+                "operationId": "getUser",
                 "parameters": [
                     {
                         "name": "id",
@@ -308,11 +332,11 @@
                 ]
             },
             "delete": {
-                "tags": [ 
-                    "Users" 
+                "tags": [
+                    "Users"
                 ],
                 "summary": "Delete an user",
-                "operationId": "789fde5561b731b2609814949ac1c23a",
+                "operationId": "deleteUser",
                 "parameters": [
                     {
                         "name": "id",
@@ -342,17 +366,21 @@
                 ]
             }
         }
-    }, 
+    },
     "components": {
-        "securitySchemes": {
-            "bearer": {
-                "type": "http",
-                "scheme": "bearer",
-                "in": "header",
-                "bearerFormat": "JWT"
-            }
-        },
         "schemas": {
+            "Client": {
+                "properties": {
+                    "username": {
+                        "type": "string"
+                    },
+                    "password": {
+                        "description": "The hashed password",
+                        "type": "string"
+                    }
+                },
+                "type": "object"
+            },
             "Product": {
                 "properties": {
                     "id": {
@@ -404,18 +432,14 @@
                     }
                 },
                 "type": "object"
-            },
-            "Client": {
-                "properties": {
-                    "username": {
-                        "type": "string"
-                    },
-                    "password": {
-                        "description": "The hashed password",
-                        "type": "string"
-                    }
-                },
-                "type": "object"
+            }
+        },
+        "securitySchemes": {
+            "bearer": {
+                "type": "http",
+                "in": "header",
+                "bearerFormat": "JWT",
+                "scheme": "bearer"
             }
         }
     }

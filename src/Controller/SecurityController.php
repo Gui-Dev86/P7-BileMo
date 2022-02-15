@@ -21,6 +21,7 @@ class SecurityController extends AbstractController
      * @Rest\View(statusCode= 200)
      * @OA\Post(
      *     path="/login_check",
+     *     tags={"Authenticate"},
      *     @OA\Response(
      *          response="200",
      *          description="Authenticate token JWT",

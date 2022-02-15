@@ -29,6 +29,7 @@ class UserController extends AbstractController
      * @Rest\View(statusCode= 200)
      * @OA\Get(
      *     path="/users",
+     *     tags={"Users"},
      *     security={"bearer"},
      *     @OA\Parameter(
      *          name="page",
@@ -76,6 +77,7 @@ class UserController extends AbstractController
      * @Rest\View(statusCode= 200)
      * @OA\Get(
      *     path="/users/{id}",
+     *     tags={"Users"},
      *     security={"bearer"},
      *     @OA\Parameter(
      *          name="id",
@@ -126,6 +128,7 @@ class UserController extends AbstractController
      * @Rest\View(statusCode= 201)
      * @OA\Post(
      *     path="/users",
+     *     tags={"Users"},
      *     security={"bearer"},
      *     @OA\Response(
      *          response="201",
@@ -179,7 +182,9 @@ class UserController extends AbstractController
         $manager->persist($user);
         $manager->flush();
         
-        return new Response("The user has been created", 201);
+        $json = $serializer->serialize($user, 'json', ['groups' => 'user']);
+        $response = new Response($json, 200, [], true);
+        return $response;
     }
 
     /**
@@ -189,6 +194,7 @@ class UserController extends AbstractController
      * @Rest\View(statusCode= 204)
      * @OA\Delete(
      *     path="/users/{id}",
+     *     tags={"Users"},
      *     security={"bearer"},
      *     @OA\Parameter(
      *          name="id",

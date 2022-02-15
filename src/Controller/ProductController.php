@@ -21,6 +21,7 @@ class ProductController extends AbstractController
      * @Rest\View(statusCode= 200)
      * @OA\Get(
      *     path="/mobiles",
+     *     tags={"Mobiles"},
      *     security={"bearer"},
      *     @OA\Parameter(
      *          name="page",
@@ -64,6 +65,7 @@ class ProductController extends AbstractController
      * @Rest\View(statusCode= 200)
      * @OA\Get(
      *     path="/mobiles/{id}",
+     *     tags={"Mobiles"},
      *     security={"bearer"},
      *     @OA\Parameter(
      *          name="id",

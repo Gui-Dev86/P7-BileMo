@@ -3,13 +3,24 @@
 use OpenApi\Annotations as OA;
 
 /**
- * @OA\Info(title="api-bilemo", version="1.0")
- * @OA\Server(url="https://bilemo.fr/api", description="Api BileMo")
+ * @OA\Info(
+ *   description="This is the Bilemo server.",
+ *   version="1.0.0",
+ *   title="Swagger Bilemo"
+ * )
+ * @OA\Server(
+ *   url="http://localhost:8000/api/",
+ *   description="Api BileMo")
+ * )
  * @OA\SecurityScheme(
- *     bearerFormat="JWT",
+ *  bearerFormat="JWT",
  *  securityScheme="bearer",
- *  type="apiKey",
+ *  type="http",
  *  in="header",
- *  name="bearer",
+ *  scheme="bearer",
  * )
  */
+
+ class Bilemo
+ {
+ }
