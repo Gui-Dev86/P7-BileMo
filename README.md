@@ -30,8 +30,8 @@ Pour paramétrer votre base de données, modifiez cette ligne avec le nom d'util
 
 exemple : DATABASE_URL="mysql://utilisateur(root de base):mot de passe(vide de base)@127.0.0.1:3306/(nom de la base de données)
 
-Pour paramétrer votre connexion par token JWT [Official documentation](https://github.com/lexik/LexikJWTAuthenticationBundle/blob/master/Resources/doc/index.md#installation
-), attention à bien posséder l'extension openssl
+Pour paramétrer votre connexion par token JWT ([Documentation officielle](https://github.com/lexik/LexikJWTAuthenticationBundle/blob/master/Resources/doc/index.md#installation
+)), attention à bien posséder l'extension openssl
 
     $ mkdir -p config/jwt
     $ openssl genpkey -out config/jwt/private.pem -aes256 -algorithm rsa -pkeyopt rsa_keygen_bits:4096
