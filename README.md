@@ -1,0 +1,2 @@
+# P7-BileMo
+[![Codacy Badge](https://api.codacy.com/project/badge/Grade/9be11055b56c404990feeb9008d762ce)](https://app.codacy.com/gh/Gui-Dev86/P7-BileMo?utm_source=github.com&utm_medium=referral&utm_content=Gui-Dev86/P7-BileMo&utm_campaign=Badge_Grade_Settings)
