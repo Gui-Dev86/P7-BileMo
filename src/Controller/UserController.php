@@ -230,14 +230,12 @@ class UserController extends AbstractController
         if($idClient !== $idUserClient) {
             throw New HttpException(403, "You haven't access to this ressource.");
         }
-        else 
-        {
-            $manager = $this->getDoctrine()->getManager();
-            $manager->remove($user);
-            $manager->flush();
+        
+        $manager = $this->getDoctrine()->getManager();
+        $manager->remove($user);
+        $manager->flush();
 
-            return new Response("The user has been deleted", 204);
-            
-        }
+        return new Response("The user has been deleted", 204);
+        
     }
 }
