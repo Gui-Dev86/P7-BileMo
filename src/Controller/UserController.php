@@ -163,7 +163,7 @@ class UserController extends AbstractController
     public function addUser(SerializerInterface $serializer, Request $request, EntityManagerInterface $manager, ValidatorInterface $validator, UserPasswordEncoderInterface $encoder): Response
     {
         $json = $request->getContent();
-
+        //transform the datas in object
         $user = $serializer->deserialize($json, User::class, 'json', ['groups' => 'user']);
         $errors = $validator->validate($user);
 
