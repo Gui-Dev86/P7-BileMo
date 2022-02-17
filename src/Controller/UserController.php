@@ -153,7 +153,6 @@ class UserController extends AbstractController
      * @OA\Response(response=401, description="JWT Token not found or expired"),
      * @OA\Response(response=404, description="Page not found")
      * )
-     * @param UserRepository $userRepository
      * @param SerializerInterface $serializer
      * @param Request $request
      * @param EntityManagerInterface $manager
@@ -161,7 +160,7 @@ class UserController extends AbstractController
      * @param UserPasswordEncoderInterface $encoder
      * @return response
      */
-    public function addUser(UserRepository $userRepository, SerializerInterface $serializer, Request $request, EntityManagerInterface $manager, ValidatorInterface $validator, UserPasswordEncoderInterface $encoder): Response
+    public function addUser(SerializerInterface $serializer, Request $request, EntityManagerInterface $manager, ValidatorInterface $validator, UserPasswordEncoderInterface $encoder): Response
     {
         $json = $request->getContent();
 
@@ -214,11 +213,10 @@ class UserController extends AbstractController
      * )
      * @param $id
      * @param UserRepository $userRepository
-     * @param Request $request
      * @param EntityManagerInterface $manager
      * @return response
      */
-    public function deleteUser($id, UserRepository $userRepository, Request $request): Response
+    public function deleteUser($id, UserRepository $userRepository): Response
     {
         //recover the id of the client connected
         $client = $this->getUser();
