@@ -73,7 +73,7 @@ class UserController extends AbstractController
     /**
      * Return user client details
      * 
-     * @Rest\Get(path="/api/users/{id}", name="api_details_users")
+     * @Rest\Get(path="/api/users/{id}", name="api_details_user")
      * @Rest\View(statusCode= 200)
      * @OA\Get(
      *     path="/users/{id}",
@@ -133,7 +133,9 @@ class UserController extends AbstractController
      *     @OA\Response(
      *          response="201",
      *          description="Creation of an user",
-     *          @OA\JsonContent(ref="#/components/schemas/User"),
+     *          @OA\JsonContent(
+     *            ref="#/components/schemas/User"
+     *          ),
      *     ),
      * @OA\RequestBody(
      *    required=true,

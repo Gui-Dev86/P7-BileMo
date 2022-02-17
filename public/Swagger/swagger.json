@@ -247,30 +247,7 @@
                         "content": {
                             "application/json": {
                                 "schema": {
-                                    "type": "object",
-                                    "properties": {
-                                        "id": {
-                                        "type": "integer",
-                                        "format": "int64",
-                                        "description": "ID of the user created"
-                                        }
-                                    }
-                                }
-                            }
-                        },
-                        "links" : {
-                            "GetUserByUserId": {
-                                "description": "The ID value returned can be used as the ID parameter in GET users/{id}",
-                                "operationId": "getUser",
-                                "parameters": {
-                                    "id": "$response.body#/id"
-                                }
-                            },
-                            "DeleteUserByUserId": {
-                                "description": "The ID value returned can be used as the ID parameter in DELETE users/{id}",
-                                "operationId": "deleteUser",
-                                "parameters": {
-                                    "id": "$response.body#/id"
+                                    "$ref": "#/components/schemas/User"
                                 }
                             }
                         }
@@ -295,7 +272,7 @@
                     "Users"
                 ],
                 "summary": "Return user client details",
-                "operationId": "getUser",
+                "operationId": "91d8b7bd829c950d78ae23fd879ba4e2",
                 "parameters": [
                     {
                         "name": "id",
@@ -336,7 +313,7 @@
                     "Users"
                 ],
                 "summary": "Delete an user",
-                "operationId": "deleteUser",
+                "operationId": "fe22765ed3aabcaadee97f76cf1e7fc8",
                 "parameters": [
                     {
                         "name": "id",
