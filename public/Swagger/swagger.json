@@ -180,6 +180,8 @@
                                         "$ref": "#/components/schemas/User"
                                     }
                                 }
+                                
+                                    
                             }
                         }
                     },
@@ -248,7 +250,7 @@
                             "application/json": {
                                 "schema": {
                                     "$ref": "#/components/schemas/User"
-                                }
+                                } 
                             }
                         }
                     },

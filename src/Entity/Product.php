@@ -17,28 +17,28 @@ class Product
      * @ORM\Id
      * @ORM\GeneratedValue
      * @ORM\Column(type="integer")
-     * @Groups("post:read")
+     * @Groups("mobile")
      * @OA\Property(type="integer")
      */
     private $id;
 
     /**
      * @ORM\Column(type="string", length=255)
-     * @Groups("post:read")
+     * @Groups("mobile")
      * @OA\Property(type="string")
      */
     private $name;
 
     /**
      * @ORM\Column(type="float")
-     * @Groups("post:read")
+     * @Groups("mobile")
      * @OA\Property(type="float")
      */
     private $price;
 
     /**
      * @ORM\Column(type="string", length=5000)
-     * @Groups("post:read")
+     * @Groups("mobile")
      * @OA\Property(type="string")
      */
     private $description;

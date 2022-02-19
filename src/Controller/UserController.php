@@ -14,6 +14,9 @@ use Symfony\Component\Serializer\SerializerInterface;
 use Symfony\Component\HttpKernel\Exception\HttpException;
 use Symfony\Component\Validator\Validator\ValidatorInterface;
 use Symfony\Component\Security\Core\Encoder\UserPasswordEncoderInterface;
+use Symfony\Contracts\Cache\CacheInterface;
+use Symfony\Contracts\Cache\ItemInterface;
+use Symfony\Contracts\Cache\TagAwareCacheInterface;
 use Doctrine\ORM\EntityManagerInterface;
 use FOS\RestBundle\Controller\Annotations as Rest;
 use OpenApi\Annotations as OA;
@@ -47,27 +50,38 @@ class UserController extends AbstractController
      *     @OA\Response(response=404, description="Page not found")
      * )
      * @param UserRepository $userRepository
+     * @param TagAwareCacheInterface $cache
      * @param SerializerInterface $serializer
      * @param Request $request
      * @param PaginatorInterface $paginator
      * @return response
      */
-    public function listUsers(UserRepository $userRepository, SerializerInterface $serializer, Request $request, PaginatorInterface $paginator): Response
+    public function listUsers(UserRepository $userRepository, TagAwareCacheInterface $cache, SerializerInterface $serializer, Request $request, PaginatorInterface $paginator): Response
     {
         //recover the client id connected
         $client = $this->getUser();
         $idClient = $client->getId();
-        //recover the users of the client connected
-        $datas = $userRepository->findByClient($idClient);
-        //recover a page with 5 users
-        $users = $paginator->paginate($datas, $request->query->getInt('page', 1), 5);
 
-        $json = $serializer->serialize($users, 'json', ['groups' => 'user']);
+        //recover the page
+        $page = $request->query->getInt("page", 1);
 
-        $response = new Response($json, 200, [], true);
-        
-        return $response;
+        //search all userss using the cache
+        $usersCache = $cache->get("users".$page, function(ItemInterface $item) use($page, $idClient, $paginator, $userRepository, $serializer){
+            $item->expiresAfter(3600);
+            $item->tag('user');
 
+            //recover the users of the client connected
+            $datas = $userRepository->findByClient($idClient);
+            //recover a page with 5 users
+            $users = $paginator->paginate($datas, $page, 5);
+
+            $json = $serializer->serialize($users, 'json', ['groups' => 'user']);
+            $response = new Response($json, 200, [], true);
+
+            return $response;
+        });
+
+        return $usersCache;
     }
 
     /**
@@ -96,30 +110,39 @@ class UserController extends AbstractController
      * )
      * @param $id
      * @param UserRepository $userRepository
+     * @param CacheInterface $cache
      * @param SerializerInterface $serializer
      * @return response
      */
-    public function showUser($id, UserRepository $userRepository, SerializerInterface $serializer): Response
+    public function showUser($id, UserRepository $userRepository, CacheInterface $cache, SerializerInterface $serializer): Response
     {
         //recover the id of the client connected
         $client = $this->getUser();
         $idClient = $client->getId();
-        //recover the datas user
-        $user = $userRepository->find($id);
-        //recover the client id of the user
-        $userClient = $user->getClient();
-        $idUserClient = $userClient->getId();
-        //verify if the client has access to this user
-        if($idClient !== $idUserClient) {
-            throw New HttpException(403, "You haven't access to this ressource.");
-        }
-        else 
-        {
+
+        //search one user using the cache
+        $userCache = $cache->get("user_details".$id, function(ItemInterface $item) use($id, $idClient, $userRepository, $serializer){
+            $item->expiresAfter(3600);
+            //recover one mobile
+            //recover the datas user
+            $user = $userRepository->find($id);
+            //recover the client id of the user
+            $userClient = $user->getClient();
+            $idUserClient = $userClient->getId();
+            //verify if the client has access to this user
+            if($idClient !== $idUserClient) {
+                throw New HttpException(403, "You haven't access to this ressource.");
+            }
+            
             $json = $serializer->serialize($user, 'json', ['groups' => 'user']);
             $response = new Response($json, 200, [], true);
+
             return $response;
+        });
+
+        return $userCache;
         }
-    }
+        
 
     /**
      * Create a new user
@@ -184,7 +207,7 @@ class UserController extends AbstractController
         $manager->flush();
         
         $json = $serializer->serialize($user, 'json', ['groups' => 'user']);
-        $response = new Response($json, 200, [], true);
+        $response = new Response($json, 201, [], true);
         return $response;
     }
 
