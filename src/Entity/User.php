@@ -9,7 +9,8 @@ use Symfony\Component\Security\Core\User\UserInterface;
 use Symfony\Component\Validator\Constraints as Assert;
 use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
 use OpenApi\Annotations as OA;
-use Symfony\Component\Serializer\Annotation\Groups;
+use JMS\Serializer\Annotation as Serializer;
+use Hateoas\Configuration\Annotation as Hateoas;
 
 /**
  * @ORM\Entity(repositoryClass=UserRepository::class)
@@ -22,6 +23,39 @@ use Symfony\Component\Serializer\Annotation\Groups;
  *      message="Cette adresse email est déjà utilisée."
  * )
  * @OA\Schema()
+ * 
+ * @Hateoas\Relation(
+ *      "self",
+ *      href = @Hateoas\Route(
+ *          "api_details_user",
+ *          parameters = { "id" = "expr(object.getId())" },
+ *          absolute = true
+ *      )
+ * )
+ * @Hateoas\Relation(
+ *      "list",
+ *      href = @Hateoas\Route(
+ *          "api_list_users",
+ *          absolute = true        
+ *      ),
+ * )
+ * @Hateoas\Relation(
+ *      "create",
+ *      href = @Hateoas\Route(
+ *          "api_add_user",
+ *          absolute = true
+ *      )
+ * )
+ * @Hateoas\Relation(
+ *      "delete",
+ *      href = @Hateoas\Route(
+ *          "api_delete_user",
+ *          parameters = { "id" = "expr(object.getId())" },
+ *          absolute = true
+ *      )
+ * )
+ * 
+ * @Serializer\ExclusionPolicy("ALL")
  */
 class User implements UserInterface, PasswordAuthenticatedUserInterface
 {
@@ -30,14 +64,14 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
      * @ORM\GeneratedValue
      * @ORM\Column(type="integer")
      * @OA\Property(type="integer")
-     * @Groups("user")
+     * @Serializer\Expose
      */
     private $id;
 
     /**
      * @ORM\Column(type="string", length=180, unique=true)
      * @OA\Property(type="string")
-     * @Groups("user")
+     * @Serializer\Expose
      */
     private $username;
 
@@ -65,7 +99,7 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
      *     message = "Votre mot de passe doit contenir au moins une minuscule, une majuscule et un chiffre."
      * )
      * @OA\Property(type="string")
-     * @Groups("user")
+     * @Serializer\Expose
      */
     private $password;
 
@@ -79,28 +113,28 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
      *      maxMessage = "Votre adresse email ne peut pas contenir plus de {{ limit }} caractères."
      * )
      * @OA\Property(type="string")
-     * @Groups("user")
+     * @Serializer\Expose
      */
     private $email;
 
     /**
      * @ORM\Column(type="string", length=255)
      * @OA\Property(type="string")
-     * @Groups("user")
+     * @Serializer\Expose
      */
     private $lastname;
 
     /**
      * @ORM\Column(type="string", length=255)
      * @OA\Property(type="string")
-     * @Groups("user")
+     * @Serializer\Expose
      */
     private $firstname;
 
     /**
      * @ORM\Column(type="datetime")
      * @OA\Property(type="datetime")
-     * @Groups("user")
+     * @Serializer\Expose
      */
     private $dateCreate;
 

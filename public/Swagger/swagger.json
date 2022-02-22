@@ -12,6 +12,56 @@
         }
     ],
     "paths": {
+        "/login_check": {
+            "post": {
+                "tags": [
+                    "Authenticate"
+                ],
+                "summary": "Return a JWT token for authentification",
+                "operationId": "9056e654130817d5830fe3912b502e81",
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "properties": {
+                                    "username": {
+                                        "description": "The username of the client.",
+                                        "type": "string",
+                                        "example": "yourUsername"
+                                    },
+                                    "password": {
+                                        "description": "Password of the client.",
+                                        "type": "string",
+                                        "format": "password",
+                                        "example": "yourPassword"
+                                    }
+                                },
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "Authenticate token JWT",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/Client"
+                                }
+                            }
+                        }
+                    },
+                    "401": {
+                        "description": "Invalid credentials"
+                    },
+                    "404": {
+                        "description": "Page not found"
+                    }
+                }
+            }
+        },
         "/mobiles": {
             "get": {
                 "tags": [
@@ -99,56 +149,6 @@
                         "bearer": []
                     }
                 ]
-            }
-        },
-        "/login_check": {
-            "post": {
-                "tags": [
-                    "Authenticate"
-                ],
-                "summary": "Return a JWT token for authentification",
-                "operationId": "9056e654130817d5830fe3912b502e81",
-                "requestBody": {
-                    "required": true,
-                    "content": {
-                        "application/json": {
-                            "schema": {
-                                "properties": {
-                                    "username": {
-                                        "description": "The username of the client.",
-                                        "type": "string",
-                                        "example": "yourUsername"
-                                    },
-                                    "password": {
-                                        "description": "Password of the client.",
-                                        "type": "string",
-                                        "format": "password",
-                                        "example": "yourPassword"
-                                    }
-                                },
-                                "type": "object"
-                            }
-                        }
-                    }
-                },
-                "responses": {
-                    "200": {
-                        "description": "Authenticate token JWT",
-                        "content": {
-                            "application/json": {
-                                "schema": {
-                                    "$ref": "#/components/schemas/Client"
-                                }
-                            }
-                        }
-                    },
-                    "401": {
-                        "description": "Invalid credentials"
-                    },
-                    "404": {
-                        "description": "Page not found"
-                    }
-                }
             }
         },
         "/users": {

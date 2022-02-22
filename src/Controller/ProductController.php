@@ -7,16 +7,24 @@ use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Component\HttpFoundation\Request;
-use Symfony\Component\Serializer\SerializerInterface;
 use Symfony\Contracts\Cache\CacheInterface;
 use Symfony\Contracts\Cache\ItemInterface;
 use Symfony\Contracts\Cache\TagAwareCacheInterface;
+use JMS\Serializer\SerializerInterface;
 use FOS\RestBundle\Controller\Annotations as Rest;
 use OpenApi\Annotations as OA;
 use Knp\Component\Pager\PaginatorInterface;
 
 class ProductController extends AbstractController
 {
+    /**
+     * @var SerializerInterface
+     */
+    private $serializer;
+
+    public function  __construct(SerializerInterface $serializer) {
+        $this->serializer = $serializer;
+    }
     /**
      * Return a list of phones ressource
      * 
@@ -43,18 +51,17 @@ class ProductController extends AbstractController
      * )
      * @param ProductRepository $productRepository
      * @param TagAwareCacheInterface $cache
-     * @param SerializerInterface $serializer
      * @param Request $request
      * @param PaginatorInterface $paginator
      * @return response
      */
-    public function listMobiles(ProductRepository $productRepository, TagAwareCacheInterface $cache, SerializerInterface $serializer, Request $request, PaginatorInterface $paginator): Response
+    public function listMobiles(ProductRepository $productRepository, TagAwareCacheInterface $cache, Request $request, PaginatorInterface $paginator): Response
     {
         //recover the page
         $page = $request->query->getInt("page", 1);
-    
+       
         //search all mobiles using the cache
-        $mobilesCache = $cache->get("products".$page, function(ItemInterface $item) use($page, $paginator, $productRepository, $serializer){
+        $mobilesCache = $cache->get("products".$page, function(ItemInterface $item) use($page, $paginator, $productRepository){
             $item->expiresAfter(3600);
             $item->tag('mobile');
             
@@ -63,7 +70,7 @@ class ProductController extends AbstractController
             //recover a page with 6 mobiles
             $products = $paginator->paginate($datas, $page, 6);
             
-            $json = $serializer->serialize($products, 'json', ['groups' => 'mobile']);
+            $json = $this->serializer->serialize($products, 'json');
             $response = new Response($json, 200, [], true);
             
             return $response;
@@ -99,18 +106,17 @@ class ProductController extends AbstractController
      * @param $id
      * @param ProductRepository $productRepository
      * @param CacheInterface $cache
-     * @param SerializerInterface $serializer
      * @return response
      */
-    public function showMobile($id, ProductRepository $productRepository, CacheInterface $cache, SerializerInterface $serializer): Response
+    public function showMobile($id, ProductRepository $productRepository, CacheInterface $cache): Response
     {
         //search one mobile using the cache
-        $mobileCache = $cache->get("product_details".$id, function(ItemInterface $item) use($id, $productRepository, $serializer){
+        $mobileCache = $cache->get("product_details".$id, function(ItemInterface $item) use($id, $productRepository){
             $item->expiresAfter(3600);
             
             //recover one mobile
-            $product = $productRepository->getOneProduct($id);
-            $json = $serializer->serialize($product, 'json');
+            $product = $productRepository->findById($id);
+            $json = $this->serializer->serialize($product, 'json');
 
             $response = new Response($json, 200, [], true);
             
