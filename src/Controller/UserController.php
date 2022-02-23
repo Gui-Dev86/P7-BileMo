@@ -10,21 +10,34 @@ use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\JsonResponse;
-use Symfony\Component\Serializer\SerializerInterface;
 use Symfony\Component\HttpKernel\Exception\HttpException;
 use Symfony\Component\Validator\Validator\ValidatorInterface;
 use Symfony\Component\Security\Core\Encoder\UserPasswordEncoderInterface;
 use Symfony\Contracts\Cache\CacheInterface;
 use Symfony\Contracts\Cache\ItemInterface;
 use Symfony\Contracts\Cache\TagAwareCacheInterface;
+use Symfony\Component\Serializer\SerializerInterface as SymfonySerializer;
 use Doctrine\ORM\EntityManagerInterface;
+use JMS\Serializer\SerializerInterface;
 use FOS\RestBundle\Controller\Annotations as Rest;
 use OpenApi\Annotations as OA;
 use Knp\Component\Pager\PaginatorInterface;
 
 class UserController extends AbstractController
 {
+    /**
+     * @var SerializerInterface
+     */
+    private $serializer;
+    /**
+     * @var SymfonySerializer
+     */
+    private $deserializer;
 
+    public function  __construct(SerializerInterface $serializer, SymfonySerializer $deserializer) {
+        $this->serializer = $serializer;
+        $this->deserializer = $deserializer;
+    }
     /**
      * Return a list of users for the client
      * 
@@ -51,12 +64,11 @@ class UserController extends AbstractController
      * )
      * @param UserRepository $userRepository
      * @param TagAwareCacheInterface $cache
-     * @param SerializerInterface $serializer
      * @param Request $request
      * @param PaginatorInterface $paginator
      * @return response
      */
-    public function listUsers(UserRepository $userRepository, TagAwareCacheInterface $cache, SerializerInterface $serializer, Request $request, PaginatorInterface $paginator): Response
+    public function listUsers(UserRepository $userRepository, TagAwareCacheInterface $cache, Request $request, PaginatorInterface $paginator): Response
     {
         //recover the client id connected
         $client = $this->getUser();
@@ -66,7 +78,7 @@ class UserController extends AbstractController
         $page = $request->query->getInt("page", 1);
 
         //search all userss using the cache
-        $usersCache = $cache->get("users".$page, function(ItemInterface $item) use($page, $idClient, $paginator, $userRepository, $serializer){
+        $usersCache = $cache->get("users".$page, function(ItemInterface $item) use($page, $idClient, $paginator, $userRepository){
             $item->expiresAfter(3600);
             $item->tag('user');
 
@@ -75,7 +87,7 @@ class UserController extends AbstractController
             //recover a page with 5 users
             $users = $paginator->paginate($datas, $page, 5);
 
-            $json = $serializer->serialize($users, 'json', ['groups' => 'user']);
+            $json = $this->serializer->serialize($users, 'json');
             $response = new Response($json, 200, [], true);
 
             return $response;
@@ -111,17 +123,16 @@ class UserController extends AbstractController
      * @param $id
      * @param UserRepository $userRepository
      * @param CacheInterface $cache
-     * @param SerializerInterface $serializer
      * @return response
      */
-    public function showUser($id, UserRepository $userRepository, CacheInterface $cache, SerializerInterface $serializer): Response
+    public function showUser($id, UserRepository $userRepository, CacheInterface $cache): Response
     {
         //recover the id of the client connected
         $client = $this->getUser();
         $idClient = $client->getId();
 
         //search one user using the cache
-        $userCache = $cache->get("user_details".$id, function(ItemInterface $item) use($id, $idClient, $userRepository, $serializer){
+        $userCache = $cache->get("user_details".$id, function(ItemInterface $item) use($id, $idClient, $userRepository){
             $item->expiresAfter(3600);
             //recover one mobile
             //recover the datas user
@@ -134,7 +145,7 @@ class UserController extends AbstractController
                 throw New HttpException(403, "You haven't access to this ressource.");
             }
             
-            $json = $serializer->serialize($user, 'json', ['groups' => 'user']);
+            $json = $this->serializer->serialize($user, 'json');
             $response = new Response($json, 200, [], true);
 
             return $response;
@@ -176,22 +187,21 @@ class UserController extends AbstractController
      * @OA\Response(response=401, description="JWT Token not found or expired"),
      * @OA\Response(response=404, description="Page not found")
      * )
-     * @param SerializerInterface $serializer
      * @param Request $request
      * @param EntityManagerInterface $manager
      * @param ValidatorInterface $validator
      * @param UserPasswordEncoderInterface $encoder
      * @return response
      */
-    public function addUser(SerializerInterface $serializer, Request $request, EntityManagerInterface $manager, ValidatorInterface $validator, UserPasswordEncoderInterface $encoder): Response
+    public function addUser(Request $request, EntityManagerInterface $manager, ValidatorInterface $validator, UserPasswordEncoderInterface $encoder): Response
     {
         $json = $request->getContent();
         //transform the datas in object
-        $user = $serializer->deserialize($json, User::class, 'json', ['groups' => 'user']);
+        $user = $this->deserializer->deserialize($json, User::class, 'json');
         $errors = $validator->validate($user);
 
         if(count($errors) > 0) {
-            $data = $serializer->serialize($errors, 'json');
+            $data = $this->serializer->serialize($errors, 'json');
             $response =  new JsonResponse($data, 400, [], true);
             return $response;
         }
@@ -206,7 +216,7 @@ class UserController extends AbstractController
         $manager->persist($user);
         $manager->flush();
         
-        $json = $serializer->serialize($user, 'json', ['groups' => 'user']);
+        $json = $this->serializer->serialize($user, 'json');
         $response = new Response($json, 201, [], true);
         return $response;
     }
@@ -258,7 +268,7 @@ class UserController extends AbstractController
         $manager->remove($user);
         $manager->flush();
 
-        return new Response("The user has been deleted", 204);
+        return new Response("The user has been deleted");
         
     }
 }

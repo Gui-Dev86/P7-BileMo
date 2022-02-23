@@ -36,6 +36,7 @@
         "symfony/yaml": "5.4.*",
         "twig/extra-bundle": "^2.12|^3.0",
         "twig/twig": "^2.12|^3.0",
+        "willdurand/hateoas-bundle": "^2.4",
         "zircote/swagger-php": "^4.2"
     },
     "config": {
@@ -82,7 +83,7 @@
     },
     "extra": {
         "symfony": {
-            "allow-contrib": false,
+            "allow-contrib": true,
             "require": "5.4.*"
         }
     },
