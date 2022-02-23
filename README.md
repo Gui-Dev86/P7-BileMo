@@ -68,6 +68,7 @@ php bin/console doctrine:migrations:migrate
 php bin/console doctrine:fixtures:load
 ```
 Il existe trois clients afin de tester les fonctionnalités du site:
+
     pseudo: Orange
     mot de passe: azerty
 
