@@ -16,7 +16,7 @@ Création de l'API Rest BileMo
 ```
 git clone https://github.com/Gui-Dev86/P7-BileMo.git
 ```
-- Installez les dépendances du projet avec Composer et npm:
+- Installez les dépendances du projet avec Composer:
 ```
 composer install
 ```
