@@ -20,11 +20,10 @@ git clone https://github.com/Gui-Dev86/P7-BileMo.git
 ```
 composer install
 ```
-```
-npm install
-```
 
 - Réalisez une copie du fichier .env nommée .env.local qui devra être crée à la racine du projet. Vous y configurez vos variables d'environnement tel que la connexion à la base de données et votre JWT_PASSPHRASE.
+
+- Supprimez le fichier composer.lock.
 
 Pour paramétrer votre base de données, modifiez cette ligne avec le nom d'utilisateur, mot de passe et nom de la base de données correespondant (ne pas oublier de retirer le # devant la ligne afin qu'elle soit prise en compte).
 
@@ -68,6 +67,7 @@ php bin/console doctrine:migrations:migrate
 php bin/console doctrine:fixtures:load
 ```
 Il existe trois clients afin de tester les fonctionnalités du site:
+
     pseudo: Orange
     mot de passe: azerty
 
